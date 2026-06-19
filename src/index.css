@@ -517,3 +517,10 @@
 
   @keyframes spin{to{transform:rotate(360deg)}}
 }
+.textReturn{
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: center;
+  margin-top: 2rem;
+}
