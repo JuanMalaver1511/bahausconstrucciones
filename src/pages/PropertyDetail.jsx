@@ -130,13 +130,13 @@ export default function PropertyDetail() {
               <div className="gallery-actions">
                 <button className="btn btn-accent" onClick={() => {
                   const msg = encodeURIComponent(`Hola, me interesa agendar una visita a:\n\n${property.title}\n${property.location || ''}\n${formatPrice(property.price, property.operation)}`)
-                  window.open(`https://wa.me/525512345678?text=${msg}`, '_blank')
+                  window.open(`https://wa.me/573106964219?text=${msg}`, '_blank')
                 }}>
                   Agendar visita
                 </button>
                 <button className="btn btn-outline" onClick={() => {
                   const msg = encodeURIComponent(`Hola, me gustaría recibir más información sobre:\n\n${property.title}\n${property.location || ''}\n${formatPrice(property.price, property.operation)}`)
-                  window.open(`https://wa.me/525512345678?text=${msg}`, '_blank')
+                  window.open(`https://wa.me/573106964219?text=${msg}`, '_blank')
                 }}>
                   Solicitar información
                 </button>
