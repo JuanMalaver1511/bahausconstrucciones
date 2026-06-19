@@ -4,11 +4,21 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
+import { v2 as cloudinary } from 'cloudinary';
 import { fileURLToPath } from 'url';
 import { initDB, getProperties, getProperty, createProperty, updateProperty, deleteProperty, authenticateUser, createSession, validateSession, destroySession } from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const USE_CLOUDINARY = !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET);
+if (USE_CLOUDINARY) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -17,18 +27,7 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = path.join(__dirname, '..', 'uploads');
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const name = crypto.randomBytes(16).toString('hex') + ext;
-    cb(null, name);
-  }
-});
+const storage = multer.memoryStorage();
 const upload = multer({
   storage,
   limits: { fileSize: 10 * 1024 * 1024 },
@@ -134,20 +133,52 @@ app.delete('/api/properties/:id', requireAuth, async (req, res) => {
   }
 });
 
-app.post('/api/upload', requireAuth, upload.array('images', 10), (req, res) => {
+app.post('/api/upload', requireAuth, upload.array('images', 10), async (req, res) => {
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ error: 'No se subieron archivos' });
   }
-  const files = req.files.map(f => f.filename);
+
+  const files = [];
+  for (const file of req.files) {
+    if (USE_CLOUDINARY) {
+      try {
+        const result = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { folder: 'bahaus', resource_type: 'image' },
+            (err, result) => err ? reject(err) : resolve(result)
+          );
+          stream.end(file.buffer);
+        });
+        files.push(result.secure_url);
+      } catch (err) {
+        console.error('Cloudinary upload error:', err);
+        return res.status(500).json({ error: 'Error al subir imagen a Cloudinary' });
+      }
+    } else {
+      const uploadsDir = path.join(__dirname, '..', 'uploads');
+      if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+      const ext = path.extname(file.originalname).toLowerCase();
+      const name = crypto.randomBytes(16).toString('hex') + ext;
+      fs.writeFileSync(path.join(uploadsDir, name), file.buffer);
+      files.push(name);
+    }
+  }
+
   res.json({ files });
 });
 
-app.delete('/api/upload/:filename', requireAuth, (req, res) => {
-  const filePath = path.join(__dirname, '..', 'uploads', req.params.filename);
+app.delete('/api/upload/:filename', requireAuth, async (req, res) => {
+  const { filename } = req.params;
+  if (USE_CLOUDINARY) {
+    try {
+      const publicId = filename.split('/').pop().split('.')[0];
+      await cloudinary.uploader.destroy(`bahaus/${publicId}`);
+    } catch {}
+    return res.json({ success: true });
+  }
+  const filePath = path.join(__dirname, '..', 'uploads', filename);
   try {
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: 'Error al eliminar archivo' });

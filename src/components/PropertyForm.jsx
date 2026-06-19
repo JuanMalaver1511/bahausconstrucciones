@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { api } from '../api'
+import { imageUrl } from '../imageUrl'
 
 const initialData = {
   title: '',
@@ -196,7 +197,7 @@ export default function PropertyForm({ property, onSave, onCancel }) {
           <div className="image-previews">
             {images.map((img, i) => (
               <div key={i} className="image-preview">
-                <img src={`/uploads/${img}`} alt="" />
+                <img src={imageUrl(img)} alt="" />
                 <button type="button" onClick={() => removeImage(img)} aria-label="Eliminar imagen">×</button>
               </div>
             ))}

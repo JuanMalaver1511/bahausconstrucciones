@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { api } from '../api'
+import { imageUrl } from '../imageUrl'
 
 const TYPE_LABELS = { apartment: 'Apartamento', studio: 'Apartaestudio', house: 'Casa', commercial: 'Comercial' }
 const OPERATION_LABELS = { sale: 'Venta', rent: 'Renta' }
@@ -61,7 +62,7 @@ export default function PropertyDetail() {
   }
 
   const allImages = property.images?.length
-    ? property.images.map(i => `/uploads/${i}`)
+    ? property.images.map(i => imageUrl(i))
     : [FALLBACK_IMAGES[property.type] || FALLBACK_IMAGES.house]
 
   const prev = () => setActiveIndex(i => (i - 1 + allImages.length) % allImages.length)

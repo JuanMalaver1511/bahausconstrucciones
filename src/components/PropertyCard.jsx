@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { imageUrl } from '../imageUrl'
 
 const TYPE_LABELS = { apartment: 'Apartamento', studio: 'Apartaestudio', house: 'Casa', commercial: 'Comercial' }
 const OPERATION_LABELS = { sale: 'Venta', rent: 'Renta' }
@@ -19,7 +20,7 @@ function formatPrice(price, operation) {
 export default function PropertyCard({ property }) {
   const navigate = useNavigate()
   const imgSrc = property.images?.[0]
-    ? `/uploads/${property.images[0]}`
+    ? imageUrl(property.images[0])
     : FALLBACK_IMAGES[property.type] || FALLBACK_IMAGES.house
 
   return (

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
+import { imageUrl } from '../imageUrl'
 import PropertyForm from '../components/PropertyForm'
 
 const TYPE_LABELS = { apartment: 'Apartamento', studio: 'Apartaestudio', house: 'Casa', commercial: 'Comercial' }
@@ -167,7 +168,7 @@ export default function AdminDashboard() {
                   <tr key={p.id}>
                     <td>
                       {p.images?.[0] ? (
-                        <img src={`/uploads/${p.images[0]}`} alt="" className="thumb" />
+                        <img src={imageUrl(p.images[0])} alt="" className="thumb" />
                       ) : (
                         <div className="thumb" style={{ background: 'var(--bg-alt)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', color: 'var(--text-muted)' }}>Sin img</div>
                       )}
