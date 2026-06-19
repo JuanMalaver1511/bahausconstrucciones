@@ -67,9 +67,6 @@ export default function AdminLogin() {
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
-          Default: admin / admin123
-        </p>
       </div>
     </div>
   )
