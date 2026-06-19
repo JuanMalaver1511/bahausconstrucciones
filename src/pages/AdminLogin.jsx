@@ -67,6 +67,8 @@ export default function AdminLogin() {
           </button>
         </form>
 
+        <a href="https://bahausconstrucciones-production.up.railway.app/">Volver</a>
+
       </div>
     </div>
   )
