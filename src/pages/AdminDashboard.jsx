@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import PropertyForm from '../components/PropertyForm'
 
-const TYPE_LABELS = { apartment: 'Departamento', studio: 'Apartaestudio', house: 'Casa', commercial: 'Comercial' }
+const TYPE_LABELS = { apartment: 'Apartamento', studio: 'Apartaestudio', house: 'Casa', commercial: 'Comercial' }
 
 function formatPrice(p) {
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }).format(p)

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { api } from '../api'
 
-const TYPE_LABELS = { apartment: 'Departamento', studio: 'Apartaestudio', house: 'Casa', commercial: 'Comercial' }
+const TYPE_LABELS = { apartment: 'Apartamento', studio: 'Apartaestudio', house: 'Casa', commercial: 'Comercial' }
 const OPERATION_LABELS = { sale: 'Venta', rent: 'Renta' }
 const FALLBACK_IMAGES = {
   apartment: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200',

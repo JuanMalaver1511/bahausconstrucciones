@@ -44,7 +44,7 @@ export default function Properties() {
           <div className="properties-filters">
             <select value={filters.type} onChange={e => updateFilter('type', e.target.value)}>
               <option value="">Todos los tipos</option>
-              <option value="apartment">Departamentos</option>
+              <option value="apartment">Apartamentos</option>
               <option value="studio">Apartaestudios</option>
               <option value="house">Casas</option>
               <option value="commercial">Comerciales</option>

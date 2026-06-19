@@ -1,6 +1,6 @@
 const testimonials = [
   {
-    text: "Bahaus Construcciones superó todas nuestras expectativas. El departamento que nos entregaron tiene acabados de primera calidad y la atención al detalle es impecable. ¡Recomendadísimos!",
+    text: "Bahaus Construcciones superó todas nuestras expectativas. El Apartamento que nos entregaron tiene acabados de primera calidad y la atención al detalle es impecable. ¡Recomendadísimos!",
     name: 'María García',
     role: 'Compradora',
     initials: 'MG',

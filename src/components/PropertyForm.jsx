@@ -119,7 +119,7 @@ export default function PropertyForm({ property, onSave, onCancel }) {
         <div className="form-group">
           <label>Tipo</label>
           <select value={form.type} onChange={e => set('type', e.target.value)}>
-            <option value="apartment">Departamento</option>
+            <option value="apartment">Apartamento</option>
             <option value="studio">Apartaestudio</option>
             <option value="house">Casa</option>
             <option value="commercial">Comercial</option>

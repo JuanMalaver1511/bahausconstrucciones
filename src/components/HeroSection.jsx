@@ -45,7 +45,7 @@ export default function HeroSection() {
         <form className="hero-search" onSubmit={handleSearch}>
           <select value={filters.type} onChange={(e) => setFilters(f => ({ ...f, type: e.target.value }))}>
             <option value="">Tipo</option>
-            <option value="apartment">Departamento</option>
+            <option value="apartment">Apartamento</option>
             <option value="studio">Apartaestudio</option>
             <option value="house">Casa</option>
             <option value="commercial">Comercial</option>

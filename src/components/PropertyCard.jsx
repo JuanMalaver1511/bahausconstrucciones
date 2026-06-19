@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
-const TYPE_LABELS = { apartment: 'Departamento', studio: 'Apartaestudio', house: 'Casa', commercial: 'Comercial' }
+const TYPE_LABELS = { apartment: 'Apartamento', studio: 'Apartaestudio', house: 'Casa', commercial: 'Comercial' }
 const OPERATION_LABELS = { sale: 'Venta', rent: 'Renta' }
 
 const FALLBACK_IMAGES = {
