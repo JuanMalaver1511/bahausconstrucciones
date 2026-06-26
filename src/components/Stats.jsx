@@ -1,9 +1,58 @@
+import { useEffect, useRef, useState } from 'react'
+
+function useCountUp(target, duration, active) {
+  const [display, setDisplay] = useState(0)
+
+  useEffect(() => {
+    if (!active) return
+    const isDecimal = !Number.isInteger(target)
+    const startTime = performance.now()
+
+    const tick = (now) => {
+      const progress = Math.min((now - startTime) / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      const current = eased * target
+      setDisplay(isDecimal ? parseFloat(current.toFixed(1)) : Math.floor(current))
+      if (progress < 1) requestAnimationFrame(tick)
+      else setDisplay(isDecimal ? parseFloat(target.toFixed(1)) : target)
+    }
+    requestAnimationFrame(tick)
+  }, [active, target, duration])
+
+  return display
+}
+
+function StatBandItem({ number, suffix, label, sub, duration = 2000 }) {
+  const [active, setActive] = useState(false)
+  const ref = useRef(null)
+  const count = useCountUp(number, duration, active)
+  const isDecimal = !Number.isInteger(number)
+  const displayValue = (isDecimal ? count.toFixed(1) : count) + suffix
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setActive(true); obs.disconnect() } },
+      { threshold: 0.3 }
+    )
+    if (ref.current) obs.observe(ref.current)
+    return () => obs.disconnect()
+  }, [])
+
+  return (
+    <div ref={ref} className="stats-band-item">
+      <div className="stats-band-number">{displayValue}</div>
+      <div className="stats-band-label">{label}</div>
+      <div className="stats-band-sub">{sub}</div>
+    </div>
+  )
+}
+
 export default function Stats() {
   const stats = [
-    { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>, number: '50+', label: 'Proyectos entregados', trend: '100% puntualidad' },
-    { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>, number: '400+', label: 'Familias felices', trend: '97% satisfacción' },
-    { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>, number: '12+', label: 'Años de experiencia', trend: 'Desde 2014' },
-    { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2l3 7h7l-5.5 5 2 8L12 17l-5.5 5 2-8L3 9h7z"/></svg>, number: '4.9', label: 'Calificación promedio', trend: 'Reseñas de clientes' },
+    { number: 50,  suffix: '+', label: 'Proyectos entregados',  sub: '100% puntualidad',   duration: 1800 },
+    { number: 400, suffix: '+', label: 'Familias felices',      sub: '97% satisfacción',   duration: 2200 },
+    { number: 12,  suffix: '+', label: 'Años de experiencia',   sub: 'Desde 2014',         duration: 1500 },
+    { number: 4.9, suffix: '',  label: 'Calificación promedio', sub: 'Reseñas verificadas', duration: 2000 },
   ]
 
   return (
@@ -11,18 +60,15 @@ export default function Stats() {
       <div className="container">
         <div className="section-header">
           <span className="section-tag">Cifras</span>
-          <h2 className="section-title">Nuestros <span className="gradient-text">números</span> hablan</h2>
-          <p className="section-subtitle">Resultados que respaldan nuestra trayectoria y compromiso.</p>
+          <h2 className="section-title font-display">
+            Nuestros <span className="gradient-text">números</span> hablan
+          </h2>
+          <p className="section-subtitle">
+            Resultados que respaldan nuestra trayectoria y compromiso con cada familia.
+          </p>
         </div>
-        <div className="stats-grid stagger">
-          {stats.map((s, i) => (
-            <div key={i} className="stat-item">
-              <div className="stat-icon">{s.icon}</div>
-              <div className="stat-number">{s.number}</div>
-              <div className="stat-label">{s.label}</div>
-              <div className="stat-trend">{s.trend}</div>
-            </div>
-          ))}
+        <div className="stats-band">
+          {stats.map((s, i) => <StatBandItem key={i} {...s} />)}
         </div>
       </div>
     </section>
